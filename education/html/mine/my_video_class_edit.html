@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+
+    <title>我的视频 课程编辑</title>
+    <link rel="stylesheet" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../css/base.css"/>
+    <link rel="stylesheet" href="../../css/sweetalert2.css"/>
+    <link rel="stylesheet" href="../../css/iconfont.css"/>
+    <link rel="stylesheet" href="../../css/header.css"/>
+    <link rel="stylesheet" href="../../css/mine/my_vodeo_class_edit.css"/>
+</head>
+<body>
+<div class="layer">
+    <header id="header" class="mui-bar mui-bar-nav">
+        <i class="mui-icon mui-icon-left-nav mui-pull-left" onclick="back()"></i>
+        <h1 class="mui-title">课程编辑</h1>
+    </header>
+    <div class="main">
+            <div class="tit">课程名称</div>
+           <div class="info">
+               <!--课程基本状态-->
+               <!--<p class="clearfix">
+                   <span>创建时间</span>
+                   <em>2018.02.23  15:23</em>
+                   <i class="f_right" onclick="location.href='./create_lesson.html'">
+                       <del class="iconfont icon-weibiaoti1"></del>课程修改
+                   </i>
+               </p>
+               <p class="clearfix status">
+                   <span>课程状态</span>
+                   &lt;!&ndash;判断是否结课&ndash;&gt;
+                   <em class="blue">未结课</em>
+                   <i class="f_right session ">
+                       结  课
+                   </i>
+               </p>
+               <div id="mask"></div>
+               <div id="session">
+                   <h3>结课状态的课程将禁止继续上架课时</h3>
+                   <div class="radio_button">
+                       <button class="quit">取消</button>
+                       <button class="confirm">确定</button>
+                   </div>
+               </div>
+               <p class="clearfix">
+                   <span>课程状态</span>
+                   <em>已发布 2018.02.23 16:00</em>
+                   <i class="f_right gray" >
+                       课程修改
+                   </i>
+               </p>
+-->
+           </div>
+        <div class="put_way">
+           <!-- <div class="no_putway">
+                <p class="clearfix">
+                    <span class="put_way">2个课时未上架</span>
+
+                    <i class="f_right show" >
+                        创建课时
+                    </i>
+                </p>
+                <p class="clearfix status">
+                    <span>2018.02.23</span>
+                    <em class="blue">AAAAAAAAAAAA</em>
+                    <i class="f_right red">
+                        上  架
+                    </i>
+                </p>
+                <p class="clearfix status">
+                    <span>2018.02.23</span>
+                    <em class="blue">名称名称名称名称</em>
+                    <i class="f_right red">
+                        上  架
+                    </i>
+                </p>
+            </div>
+            <div class="has_put_way">
+                <h3 class="clearfix">已上架 <s>10</s> 个课时
+                    <em class="f_right">上架日期</em>
+                </h3>
+                <p>
+                    <del data-id="1"></del>
+                    <span>第1课  相交线第1课  相交线第1课  相交线第1课  相交线第1课  相交线</span>
+                    <i class="f_right">2018.10.30 10:32</i>
+                </p>
+                <p>
+                    <del data-id="2"></del>
+                    <span>第1课  相交线</span>
+                    <i class="f_right">2018.10.30 10:32</i>
+                </p>
+                <p>
+                    <del data-id="3"></del>
+                    <span>第1课  相交线</span>
+                    <i class="f_right">2018.10.3 10:32</i>
+                </p>
+                <div class="operation">
+                    <button class="all_choose">全选</button>
+                    <button class="sold_out">下架</button>
+                </div>
+            </div>-->
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/x_rem.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/back.js"></script>
+<script src="../../js/sweetalert2.js"></script>
+<script src="../../js/template-web.js"></script>
+<script src="../../js/template.js"></script>
+<script id="baseInfo" type="text/html">
+    <p class="clearfix">
+        <span>创建时间</span>&nbsp;&nbsp;
+        <em>{{time(data.createTime)}}</em>
+        <i class="f_right" onclick="location.href='./create_lesson_hasedit.html?courseid={{data.id}}'">
+            <del class="iconfont icon-weibiaoti1"></del>课程修改
+        </i>
+    </p>
+    <p class="clearfix status">
+        <span>结课状态</span>&nbsp;&nbsp;
+        <!--判断是否结课-->
+        {{if data.classEndingStatus==1}}
+        <em class="blue" >未结课</em>
+        <i class="f_right session ">
+            结  课
+        </i>
+        {{else}}
+        <em class="blue" >已结课</em>
+        {{/if}}
+    </p>
+    <div id="mask"></div>
+    <div id="session">
+        <h3>结课状态的课程将禁止继续上架课时</h3>
+        <div class="radio_button">
+            <button class="quit">取消</button>
+            <button class="confirm" onclick="classEndingStatus('{{data.id}}')">确定</button>
+        </div>
+    </div>
+    <p class="clearfix course_status">
+        <span>课程状态</span>&nbsp;&nbsp;
+        {{if data.releaseStatus==1}}
+        <em><s>未发布</s> {{time(data.updateTime)}}</em>
+        <i class="f_right "  onclick="course_status('{{data.id}}',this)">
+            发布
+        </i>
+        {{else}}
+        <em>已发布 {{time(data.updateTime)}}</em>
+        {{/if}}
+    </p>
+
+</script>
+<script id="putWay" type="text/html">
+    <div class="no_putway">
+        <p class="clearfix">
+            <span class="put_way">{{data.LowerShelfNum}}个课时未上架</span>
+
+            <i class="f_right show" onclick="back()" >
+                创建课时
+            </i>
+        </p>
+        {{if data.LowerShelfNum !==0 }}
+        {{each data.LowerShelfList as value i}}
+        <p class="clearfix status">
+            <span>{{time(value.updateTime)}}</span>&nbsp;&nbsp;
+            <em class="blue">{{value.periodName}}</em>
+            <i class="f_right red" onclick="upperShelf('{{value.id}}')">
+                上  架
+            </i>
+        </p>
+        {{/each}}
+        {{/if}}
+    </div>
+    <div class="has_put_way">
+        <h3 class="clearfix">已上架 <s>{{data.UpperShelfNum}}</s> 个课时
+            <em class="f_right">上架日期</em>
+        </h3>
+        {{if data.UpperShelfNum!==0}}
+        {{each data.UpperShelfList as value i}}
+        <p>
+            <del data-id="{{value.id}}"></del>
+            <span>第{{i+1}}课  {{value.periodName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="f_right">{{time(value.updateTime)}}</i>
+        </p>
+        {{/each}}
+        {{/if}}
+        <div class="operation">
+            <button class="all_choose">全选</button>
+            <button class="sold_out">下架</button>
+        </div>
+    </div>
+</script>
+<script>
+    // 上架  课时
+    var courseid=location.href.split("=")[1];
+    function upperShelf(id){
+        myAjax({url:"/course/related/update/Period/UpperShelf",data:{periodid:id},type:"post"},function(data){
+        console.log(data);
+            if(data.status==200){
+                list(courseid)
+            }else{
+                sweetAlert(
+                        "sorry",
+                        data.msg,
+                        "error"
+                )
+            }
+    })
+    }
+    function classEndingStatus(id){
+        myAjax({url:"/course/related/update/course/classEndingStatus",data:{courseid:id},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+               $(".status em").text("已结课");
+               $(".session").text("已结课");
+            }else{
+                sweetAlert(
+                        "sorry",
+                        data.msg,
+                        "error"
+                )
+            }
+        })
+    }
+    function course_status(id,e){
+        myAjax({url:"/course/related/update/course/releaseStatus",data:{courseid:id},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+                $(this).text("已发布");
+                $(".course_status>em>s").text("已发布");
+            }else{
+                sweetAlert(
+                        "sorry",
+                        data.msg,
+                        "error"
+                )
+            }
+        })
+    }
+     list(courseid);
+    //上架的课时列表
+    function list(courseid){
+        myAjax({url:"/course/related/get/course/Period/List",data:{courseid:courseid},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+                template.helper("time",function(date){
+                    var time=new Date(date).toLocaleString().replace(/:\d{1,2}$/,' ').substr(0,20).replace(/\//g,"-");
+                    return time;
+                });
+                $(".put_way").html(template("putWay",data));
+
+            }
+        })
+    }
+    $(function (){
+        myAjax({url:"/course/related/get/course/BaseInfo",data:{courseid:courseid},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+                template.helper("time",function(date){
+                    var time=new Date(date).toLocaleString().replace(/:\d{1,2}$/,' ').replace(/\//g,"-");
+                    return time;
+                });
+                $(".tit").text(data.data.academicYear+data.data.grade+data.data.subject+data.data.semester);
+                $(".info").html(template("baseInfo",data));
+                /*结课*/
+                $(".session").click(function () {
+                    $("#mask").show();
+                    $("#session").show();
+                });
+                $(".quit").click(function () {
+                    $("#mask").hide();
+                    $("#session").hide();
+                })
+                $(".confirm").click(function () {
+                    /*确定结课*/
+                    $("#mask").hide();
+                    $("#session").hide();
+                })
+            }
+        })
+
+
+
+        /*全选*/
+        var all_choose=true;
+        $(".put_way").on("click",".all_choose", function () {
+            if(all_choose){
+                $(".has_put_way>p>del").text("√");
+                $(".has_put_way>p>del").addClass("active");
+                all_choose=false;
+            }else{
+                $(".has_put_way>p>del").text("");
+                $(".has_put_way>p>del").removeClass("active");
+                all_choose=true;
+            }
+        })
+        /*单选 下架*/
+        var falg=true;
+        $(".put_way").on("click",".has_put_way>p", function () {
+            if(falg){
+                $(this).children("del").text("√");
+                $(this).children("del").addClass("active");
+                falg=false;
+            }else{
+                $(this).children("del").text("");
+                $(this).children("del").removeClass("active");
+                falg=true;
+            }
+        })
+        var str=[];
+        $(".put_way").on("click",".sold_out", function () {
+            var active=$(".active");
+            for(var i=0;i<active.length;i++){
+                //console.log($(".active")[i]);
+                var that=active[i];
+                str.push(that.getAttribute("data-id"));
+            }
+            console.log(str);
+            if(str.length==0){
+                sweetAlert(
+                        "sorry",
+                        "请您选择要下架的课时",
+                        "error"
+                )
+                return false;
+            }else{
+                str=str.join(",")
+                console.log(str);
+                myAjax({url:"/course/related/update/Period/LowerShelf",data:{periodids:str},type:"post"}, function (data) {
+                    console.log(data);
+                    if(data.status==200){
+                    list(courseid);
+                    }
+                })
+
+            }
+
+        })
+       /* $(".sold_out").click(function () {
+
+        })*/
+
+    })
+</script>
+</html>

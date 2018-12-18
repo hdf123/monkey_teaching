@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+
+    <title>我的页面</title>
+    <link rel="stylesheet" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../css/base.css"/>
+    <link rel="stylesheet" href="../../css/sweetalert2.css"/>
+    <link rel="stylesheet" href="../../css/iconfont.css"/>
+    <link rel="stylesheet" href="../../css/header.css"/>
+    <link rel="stylesheet" href="../../css/mine/mine.css"/>
+</head>
+<body style="background-color:#fff;">
+<div class="layer">
+    <header>
+        <h3>个人中心</h3>
+       <!-- <span class="iconfont icon-richscan_icon"></span>-->
+    </header>
+    <div class="mian">
+        <div class="mine_login">
+           <!-- 判断有没有登录
+            &lt;!&ndash;未登录&ndash;&gt;
+            &lt;!&ndash;<div class="no_login" onclick="location.href='../login.html'">
+                <div class="head_img">
+                </div>
+                <span>点击登录</span>
+            </div>&ndash;&gt;
+            &lt;!&ndash;登录过了&ndash;&gt;
+            <div class="has_login">
+               <div class="login_content">
+                   <img src="../../img/focus-img1.png" alt=""/>
+                   <div class="has_center">
+                       <em>Msay</em>
+                       <del>洛浦中学&nbsp;&nbsp;初二上&nbsp;&nbsp;学生</del>
+                   </div>
+                   <div class="has_right" onclick="location.href='editData.html'">
+                       编辑 <i class="mui-icon mui-icon-arrowright"></i>
+                   </div>
+               </div>
+                <div class="my_Attention">
+                    <ul class="clearfix">
+                        <li>
+                            <a href="./my_attention.html">
+                                <em>114</em>
+                                <span>关注</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./my_fans.html">
+                                <em>114</em>
+                                <span>粉丝</span>
+                            </a>
+
+                        </li>
+                        <li>
+                            <a href="./integral_rule_detail.html">
+                                <em>114</em>
+                                <span>积分</span>
+                            </a>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>-->
+        </div>
+        <ul class="mui-table-view mine_center">
+            <li class="mui-table-view-cell">
+                <a class="mui-navigate-right my_save" href="./my_save.html">
+                    <em class="iconfont icon-wujiaoxingkong"></em>
+                    我的收藏
+                </a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a class="mui-navigate-right my_learn" href="./mine_study.html">
+
+                    <em class="iconfont icon-clock"></em>
+                   学习中心
+                </a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a class="mui-navigate-right my_request" href="./mine_request.html">
+                    <em class="iconfont icon-wenda"></em>
+                   我的问答
+                </a>
+            </li>
+            <li class="mui-table-view-cell ">
+                <a class="mui-navigate-right my_dynamic" href="mine_dynamic.html">
+                    <em class="iconfont icon-fasong"></em>
+                   我的动态
+                </a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a class="mui-navigate-right message" href="mine_message.html">
+                    <em class="iconfont icon-wodexiaoxi"></em>
+                   我的消息
+                </a>
+            </li>
+           <!-- <li class="mui-table-view-cell">
+                <a class="mui-navigate-right download" href="javascript:;">
+                    <em class="iconfont icon-xiazai"></em>
+                   我的下载
+                </a>
+            </li>-->
+            <li class="mui-table-view-cell edu_gray">
+                <!--截取-->
+                    <em class="iconfont icon-bijibendiannao"></em>
+                    教务管理
+                    <i class="iconfont icon-mima"></i>
+
+            </li>
+            <!--必须是认证成功的老师 才显示-->
+            <div class="educational">
+                <!--填充-->
+                <li class="mui-table-view-cell">
+                    <!--截取-->
+                    <a class="mui-navigate-right manage" href="educational_administration.html">
+                        <em class="iconfont icon-bijibendiannao"></em>
+                       教务管理
+                    </a>
+                </li>
+            </div>
+
+            <li class="mui-table-view-cell">
+                <a class="mui-navigate-right save" href="my_account_savety.html">
+                    <em class="iconfont icon-anquan"></em>
+                   账号安全
+                </a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a class="mui-navigate-right setting" href="./setting.html">
+                    <em class="iconfont icon-shezhi"></em>
+                   设置
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!--页脚-->
+    <div id="footer">
+    </div>
+</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/x_rem.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/sweetalert2.js"></script>
+<script src="../../js/template-web.js"></script>
+<script src="../../js/template.js"></script>
+<script id="no_login" type="text/html">
+   <!-- 判断有没有登录-->
+    <!--未登录-->
+    <div class="no_login" onclick="location.href='../login.html'">
+        <div class="head_img">
+        </div>
+        <span>点击登录</span>
+    </div>
+</script>
+<script id="has_login" type="text/html">
+    <!--登录过了-->
+    <div class="has_login">
+        <div class="login_content">
+            <img src="{{data.user.portrait==null?'../../img/logo.png':data.user.portrait}}" alt=""/>
+            <div class="has_center">
+                <em>{{data.user.nickname==null?data.user.realName==null?"未设置":data.user.realName:data.user.nickname}}</em>
+                <del>{{data.school}}&nbsp;&nbsp;{{data.user.grade}}&nbsp;&nbsp;
+                    {{if data.user.identityAuthentication==4}}
+                    教师
+                {{else if data.user.identityAuthentication==3}}
+                    学生
+                {{else if data.user.identityAuthentication==2}}
+                    教师认证中
+                {{else }}
+                    游客
+
+                    {{/if}}
+                </del>
+            </div>
+            <div class="has_right" onclick="location.href='editData.html'">
+                编辑 <i class="mui-icon mui-icon-arrowright"></i>
+            </div>
+        </div>
+        <div class="my_Attention">
+            <ul class="clearfix">
+                <li>
+                    <a href="./my_attention.html">
+                        <em>{{data.AllAttentionNum}}</em>
+                        <span>关注</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./my_fans.html">
+                        <em>{{data.FansNum}}</em>
+                        <span>粉丝</span>
+                    </a>
+
+                </li>
+                <li>
+                    <a href="./integral_rule_detail.html?score={{data.user.usableIntegral}}">
+                        <em>{{data.user.usableIntegral}}</em>
+                        <span>积分</span>
+                    </a>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</script>
+<script>
+    (function($, doc) {
+        $.init();
+        $.plusReady(function() {
+            var backButtonPress = 0;
+            $.back = function(event) {
+                backButtonPress++;
+                if (backButtonPress > 1) {
+                    plus.runtime.quit();
+                } else {
+                    plus.nativeUI.toast('再按一次退出应用');
+                }
+                setTimeout(function() {
+                    backButtonPress = 0;
+                }, 1000);
+                return false;
+            };
+        });
+    }(mui, document));
+    $(function () {
+        $(".layer").on("click",".edu_gray", function () {
+            //alert("12");
+            sweetAlert(
+                    "sorry",
+                    "必须是认证通过的教师身份，才能开启教务管理模块，您暂时还不具备此权限",
+                    "error"
+            )
+        })
+        mui('body').on('tap','a',function(){document.location.href=this.href;});
+        $('#footer').load('../common/footer.html');
+        setTimeout(function () {
+            $(".mui-bar-tab>a:nth-of-type(4)").addClass("mui-active");
+        },100);
+        /*通过 token 查询用户信息接口*/
+        var token=localStorage.getItem("token");
+        var userid =localStorage.getItem("this_userid");
+        myAjax({url:`/user/token/${token}`,type:'post',async:false}, function (data) {
+        console.log(data);
+            if(data.status==200){
+                localStorage.setItem("this_userid",data.data.userid);
+            }
+            if(data.status==321){
+                sweetAlert(
+                        "sorry",
+                        "您的账号信息在别处登录，请您重新登录",
+                        "error"
+                ).then(function () {
+                            location.href='../login.html';
+                        })
+            }
+        })
+        if(!token){
+            /*未登录*/
+            $(".mine_login").html(template("no_login"));
+        }else{
+            myAjax({url:"/user/my/get/Base/Info",data:{userid:userid},type:"post"}, function (data) {
+                console.log(data);
+                if(data.status==200){
+                    $(".mine_login").html(template("has_login",data));
+                    localStorage.setItem("identityAuthentication",data.data.user.identityAuthentication);
+                    if(data.data.user.identityAuthentication==4){
+                        $(".edu_gray").hide()
+                    }else{
+                        $(".educational").hide()
+                    }
+                }
+            })
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+
+    <title>我要回答</title>
+    <link rel="stylesheet" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../css/base.css"/>
+    <link rel="stylesheet" href="../../css/sweetalert2.css"/>
+    <link rel="stylesheet" href="../../css/iconfont.css"/>
+    <link rel="stylesheet" href="../../css/header.css"/>
+    <link rel="stylesheet" href="../../css/mine/mine.css"/>
+    <link rel="stylesheet" href="../../css/publish/publish_activity.css"/>
+    <link rel="stylesheet" href="../../css/publish/publish_less.css"/>
+    <link href="../../css/data_time/mobiscroll.2.13.2.css" rel="stylesheet" />
+
+    <style>
+        .say>.style{
+            border-bottom: 1px solid #eeeeee;
+        }
+        #loading{
+            display: none;
+        }
+    </style>
+</head>
+<body style="background-color:#fff;">
+<div id="loading">
+    <img src="../../img/login.gif" alt=""/>
+    <div>请等待，正在发送...</div>
+</div>
+<div class="layer">
+    <div id="mask"></div>
+    <div id="role_share" class="clearfix">
+        <h3>悬赏积分 <em class="mui-icon mui-icon-closeempty f_right del"></em></h3>
+        <p>1、您发布的提问可以采纳多个回答;</p>
+        <p>2、如果您进行了积分悬赏,那么您所悬赏的积分就是每个回答的赏金(即您需为每个采纳的回答支付一笔您悬赏的积分额度作为报酬),并且在您发布问题后会直接扣除一笔您所悬赏的积分作为之后您采纳的第一个回答的赏金;</p>
+        <p>3、如果您填写的悬赏积分为0或者未填, 则默认不进行积分悬赏,悬赏积分有助于您快速获得问题的解答</p>
+    </div>
+    <header id="header" class="mui-bar mui-bar-nav">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">提问</h1>
+    </header>
+    <div class="main">
+        <div class="say">
+            <input type="text" class="style"  placeholder="请输入问题标题"/>
+            <textarea name="" id="" cols="50" rows="5" placeholder="请输入问题内容描述"></textarea>
+        </div>
+        <div class="imageBox">
+            <!--<a href="javascript:;" class="image">
+                  <img src="../img/publish_common.png" alt="" class="userImg"/>
+                  <span class="add_pic">点击添加图片</span>
+              </a>-->
+            <!--<a href="javascript:;">
+              <img src="../img/publish_common.png" alt="" class="userImg"/>
+              <span class="add_pic">点击添加图片</span>
+          </a>
+              <input type="file" capture="camera" accept="image/*" id="cameraInput" name="cameraInput" multiple>-->
+            <div class="z_photo">
+                <div class="z_file">
+                    <!--   <img src="../img/publish_common.png" alt="" class="userImg"/>-->
+                    <!--<span class="add_pic">点击添加图片</span>-->
+                    <input type="file" capture="camera" name="file" id="file" value=""  accept="image/*" multiple onchange="imgChange('z_photo','z_file');" />
+                </div>
+            </div>
+
+            <div class="z_mask">
+                <div class="z_alert">
+                    <p>确定要删除这张图片吗？</p>
+                    <p>
+                        <span class="z_cancel">取消</span>
+                        <span class="z_sure">确定</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="score">
+            <input type="number" placeholder="请填写每个采纳的悬赏积分(非负整数)"/>
+            <em class="mui-icon mui-icon-help rule"></em>
+        </div>
+        <div class="origin">
+            <input type="text" placeholder="请选择问题来源（必填）"/>
+        </div>
+
+        <div id="choose_share">
+            <h3>请您选择来源(首先选择教师，其次课程)</h3>
+            <ul>
+               <!-- &lt;!&ndash;内容从后台获取&ndash;&gt;
+                <li data-id="1">
+                    <span>2018年高三数学上期2018年高三数学上期2018年高三数学上期2018年高三数学上期2018年高三数学上期2018年高三数学上期</span>
+                </li>
+                <li>
+                    <span>2017年高三数学上期</span>
+                </li>-->
+                <!--重绘 页面 二级示例
+                -->
+            </ul>
+
+        </div>
+
+        <div id="sure">
+            <button class="confirm">
+                确定
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/mui.picker.min.js"></script>
+<script src="../../js/mui_poppicker.js"></script>
+<script src="../../js/x_rem.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/sweetalert2.js"></script>
+<script src="../../js/template-web.js"></script>
+<script src="../../js/template.js"></script>
+<script id="share" type="text/html">
+    {{each data as value i}}
+    <li data-id="{{value.teacherId}}" class="status">
+        <span>教师姓名：{{value.nickname==null?"猴姆教学":value.nickname}}</span>
+    </li>
+    {{/each}}
+</script>
+<script id="choose" type="text/html">
+    {{each data as value i}}
+    <li data-id="{{value.courseId}}" class="status_course">
+       <span>{{value.courseName}}</span>
+    </li>
+    {{/each}}
+</script>
+<script>
+    /*选择问题来源*/
+    myAjax({url:"/Question/and/Answer/get/Question/From/teacherList",data:"",type:"post"}, function (data) {
+        console.log(data);
+        if(data.status==200){
+            $("#choose_share>ul").html(template("share",data));
+        }
+    })
+    $("#choose_share").on("click",".status", function () {
+        var teacherId=$(this).data("id");
+        myAjax({url:"/Question/and/Answer/get/Question/From/CourseList",
+            data:{teacherid:teacherId},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+                $("#choose_share>ul").html(template("choose",data));
+            }
+        })
+    })
+    var courseId;
+    $("#choose_share").on("click",".status_course", function () {
+       courseId=$(this).data("id");
+        console.log(courseId);
+        $(".origin>input").val($(this).text());
+        $("#mask").hide();
+        $("#choose_share").hide();
+    })
+    $(".origin>input").focus(function () {
+       // alert(1)
+        $("#mask").show()
+        $("#choose_share").show()
+    })
+    /*选择视频 所属课程 单选*/
+    $("#choose_share li").click(function () {
+       // $(".origin>input").val($(this).children("span").text());
+        $("#mask").hide();
+        $("#choose_share").hide();
+    });
+
+    /*弹框消失*/
+    $(".rule").click(function () {
+        $("#role_share").show();
+        $("#mask").show();
+        $("#role_share .del").click(function () {
+            $("#role_share").hide();
+            $("#mask").hide();
+        })
+    })
+    $("#mask").click(function (e) {
+        if(e.target!==$("#choose_share")){
+            $("#choose_share").hide();
+            $("#mask").hide();
+        }
+    })
+    //图片上传
+    var obj={};
+    $(".confirm").click(function(){
+       $("#loading").show();
+       var title=$(".say>.style").val().trim();
+        if(title==""){
+            $("#loading").hide();
+            sweetAlert(
+                    "sorry",
+                    "标题不能为空哦",
+                    "error"
+            )
+            return false;
+        }else{
+            obj.title=title;
+        }
+       obj.userid=localStorage.getItem("this_userid");
+        if($(".origin>input").val().trim()==""){
+            $("#loading").hide();
+            sweetAlert(
+                    "sorry",
+                    "请您选择问题来源",
+                    "error"
+            )
+
+            return false;
+        }else{
+            obj.courseid=courseId;
+        }
+      var num=$(".score>input").val().trim();
+        var reg=/^\d+$/;
+        console.log(num);
+        if(!reg.test(num)){
+            $("#loading").hide();
+            sweetAlert(
+                    "sorry",
+                    "请您输入非负整数(可以为0)",
+                    "error"
+            )
+
+            return false;
+        }else{
+          obj.reward=num;
+        }
+        var body=$("textarea").val().trim();
+        if(body==""){
+            $("#loading").hide();
+            sweetAlert(
+                    "sorry",
+                    "问题描述不能为空哦",
+                    "error"
+            )
+
+            return false;
+        }else{
+            obj.body=body;
+        }
+    //图片转换
+        var base64s=images.join("。").replace(/"/g,"");
+       // console.log(base64s);
+        myAjax({url:"/pic/multiple/base64/upload",type:"post",data:{"base64s":base64s},async:false}, function (data) {
+            console.log(data);
+            $("#loading").show();
+            if(data.status==200){
+               obj.picture=data.data;
+                myAjax({url:"/Question/and/Answer/add/Question",data:obj,type:"post"}, function (data) {
+                    console.log(data);
+                    $("#loading").hide();
+                    if(data.status==200){
+                        sweetAlert(
+                                "恭喜你",
+                                "发布提问成功",
+                                "success"
+                        ).then(function () {
+                                    $("input").val("");
+                                    $("textarea").val("");
+                                })
+                    }else{
+                        $("#loading").hide();
+                        sweetAlert(
+                                "sorry",
+                                data.msg,
+                                "error"
+                        )
+                        return false;
+                    }
+                })
+            }else{
+                $("#loading").hide();
+                sweetAlert(
+                        "sorry",
+                        data.msg,
+                        "error"
+                )
+            }
+        })
+       /* var title= $(".style").val();
+
+        //转换成功 图片的base64地址 很重要
+        // console.log(images);
+        //获取用户输入的全部内容之后 包括图片的地址  发送给后台 在进行页面的跳转
+        var content=$("textarea").val() ;
+        if(content!==""&&$(".location_info").text()!=="位置"&&title!==""&&endTime!==""&&startTime!==""){
+            startTime=new Date(startTime.replace(/-/g,"/"));
+            endTime=new Date(endTime.replace(/-/g,"/"));
+            obj.content=content;
+            obj.title=title;
+            obj.image= JSON.stringify(images);
+            obj.startTime=startTime;
+            obj.endTime=endTime;
+            obj.address= $(".location_info").text();
+            console.log(obj);
+            $.ajax({
+                //处理session每次不唯一问题
+                xhrFields: {
+                    withCredentials: true
+                },
+                //请求方式
+                type:'post',
+                url:baseUrl+'/partner/pushPartner',
+                dataType:'json',
+                data:obj,
+                beforeSend:function(){
+                    $("#loading").show();
+                },
+                success:function(data){
+                    console.log(data);
+                    if(data.code=="success"){
+                        $("#loading").hide();
+                        //alert("发表成功");
+                        swal(
+                                '干得漂亮！',
+                                '您发表成功了！',
+                                'success'
+                        ).then(function(){
+                                    //清除location 本地存储
+                                    localStorage.removeItem("location");
+                                    window.location.href="./work_sigle.html";
+                                })
+
+                    }
+                },
+                error:function(data){
+                    console.log(data);
+                }
+            })
+        }
+        else{
+            sweetAlert(
+                    'sorry',
+                    '记得填写内容哦！',
+                    'error'
+            )
+        }*/
+    })
+    /*上传图片
+     * */
+    function imgChange(obj1, obj2) {
+        //获取点击的文本框
+        var file = document.getElementById("file");
+        //存放图片的父级元素
+        var imgContainer = document.getElementsByClassName(obj1)[0];
+        //获取的图片文件
+        var fileList = file.files;
+        //文本框的父级元素
+        var input = document.getElementsByClassName(obj2)[0];
+        var imgArr = [];
+        //遍历获取到得图片文件
+        for (var i = 0; i < fileList.length; i++) {
+           /* //判断上传的图片大小
+            if(file.files && file.files[i]){
+                var fileData = file.files[i];
+                var size = fileData.size;   //注意，这里读到的是字节数
+                var isAllow = false;
+                if(!size) isAllow = false;
+                var maxSize = 2048;
+                maxSize = maxSize * 1024;   //转化为字节
+                isAllow = size <= maxSize;
+                if(!isAllow){
+                    alert("大小超过2 M，请重新上传");
+                    return false;
+                }
+            }*/
+            //结束
+            var imgUrl = window.URL.createObjectURL(file.files[i]);
+            imgArr.push(imgUrl);
+            var img = document.createElement("img");
+            img.setAttribute("src", imgArr[i]);
+            var imgAdd = document.createElement("div");
+            imgAdd.setAttribute("class", "z_addImg");
+            imgAdd.appendChild(img);
+            imgContainer.appendChild(imgAdd);
+            //getBase64Image(img,imgArr[i]);
+        };
+        //'console.log(imgArr);这个是图片的本地地址
+        for(let i=0;i<imgArr.length;i++){
+            (function(image, x, y,index){
+                drawing(image, x, y,index)
+            })(imgArr[i],0,0,i)
+        }
+        imgRemove();
+    };
+    function imgRemove() {
+        var imgList = document.getElementsByClassName("z_addImg");
+        var mask = document.getElementsByClassName("z_mask")[0];
+        var cancel = document.getElementsByClassName("z_cancel")[0];
+        var sure = document.getElementsByClassName("z_sure")[0];
+        for (var j = 0; j < imgList.length; j++) {
+            imgList[j].index = j;
+            imgList[j].onclick = function() {
+                var t = this;
+                mask.style.display = "block";
+                cancel.onclick = function() {
+                    mask.style.display = "none";
+                };
+                sure.onclick = function() {
+                    mask.style.display = "none";
+                    t.style.display = "none";
+                };
+            }
+        };
+    };
+    var container=document.querySelector(".z_photo");
+    var images=[];
+    function drawing(image, x, y,index) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = image;
+        img.onload = function () {
+            let id='canvas'+index;
+            createCanvas(id,img.width,img.height);
+            var cs = document.getElementById(id);
+            var ctx = cs.getContext("2d");
+            ctx.drawImage(img, x, y);
+            var imageUrl=cs.toDataURL('', 1);
+            images.push(imageUrl);
+            //转换成功
+            // console.log(images);
+            removeDom(id);
+        } ;
+    }
+    function createCanvas(id,width,height){
+        var canvas=document.createElement("canvas");
+        canvas.setAttribute('id',id);
+        canvas.setAttribute('width',width);
+        canvas.setAttribute('height',height);
+        canvas.style.display="none";
+        container.appendChild(canvas);
+    }
+    function removeDom(id){
+        document.getElementById(id).outerHTML='';
+    }
+
+
+</script>
+
+</html>

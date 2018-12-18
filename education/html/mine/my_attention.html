@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+
+    <title>我的关注</title>
+    <link rel="stylesheet" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../css/base.css"/>
+    <link rel="stylesheet" href="../../css/header.css"/>
+    <link rel="stylesheet" href="../../css/sweetalert2.css"/>
+    <link rel="stylesheet" href="../../css/near_bay/near_bay.css"/>
+    <style>
+        .main{
+            padding-top: 1.5rem;
+        }
+        .mui-slider{
+            border-bottom: 0.2rem solid #eeeeee;
+        }
+        .mui-segmented-control .mui-control-item.mui-active {
+            color: #f01414;
+            background-color: rgba(0,0,0,0);
+        }
+        .mui-segmented-control .mui-control-item{
+            color: #333;
+           border:none;
+        }
+        .main .teacher_lists .list_teacher{
+            padding-bottom: 0.2rem;
+        }
+        .main .teacher_lists .list_teacher .list_center{
+            top: 30%;
+        }
+    </style>
+</head>
+<body style="background-color:#fff;">
+<div class="layer">
+    <header id="header" class="mui-bar mui-bar-nav">
+        <i class="mui-icon mui-icon-left-nav mui-pull-left" onclick="back()"></i>
+        <h1 class="mui-title">我的关注</h1>
+    </header>
+    <div class="main">
+        <div id="slider" class="mui-slider ">
+            <div style="padding: 10px 20px;">
+                <div id="segmentedControl" class="mui-segmented-control">
+                    <a class="mui-control-item mui-active" href="#All">
+                        <span>全部</span>
+
+                    </a>
+                    <a class="mui-control-item" href="#teacher">
+                        <span>个人</span>
+                    </a>
+                    <a class="mui-control-item" href="#school">
+                        <span>学校</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="main_content">
+           <!-- //把外层的div 去掉就能正常的跳转了-->
+            <!--全部-->
+            <div id="All" class="mui-control-content mui-active">
+                <div class="teacher_lists">
+                  <!--  <div class="list_teacher" onclick="location.href='../index/teacher_index.html'">
+                        <img src="../../img/focus-img1.png" alt="">
+                        <div class="list_center">
+                            <div class="list_center_top clearfix">
+                                <span>傅娟 </span>
+                            </div>
+                            <div class="list_center_center clearfix">
+                                <em>数学</em>
+                                <em>初二</em>
+                            </div>
+                            <div class="list_bottom">
+                                华南师范大学附属中学
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list_teacher" onclick="location.href='../index/edu_index.html'">
+                        <img src="../../img/focus-img1.png" alt="">
+                        <div class="list_center">
+                            <div class="list_center_top clearfix">
+                                <span>华南师范大学附属中学 </span>
+                            </div>
+                            <div class="list_bottom">
+                                广州市天河区中山大道西1路
+                            </div>
+                        </div>
+                    </div>
+                -->
+                </div>
+            </div>
+            <div id="teacher" class="mui-control-content ">
+               <div class="teacher">
+                   <div class="teacher_lists">
+                       <!--填充-->
+                   </div>
+               </div>
+
+            </div>
+            <div id="school" class="mui-control-content ">
+               <div class="school">
+                   <div class="teacher_lists">
+                     <!-- <div class="list_teacher" onclick="location.href='../index/edu_index.html'">
+                           <img src="../../img/focus-img1.png" alt="">
+                           <div class="list_center">
+                               <div class="list_center_top clearfix">
+                                   <span>华南师范大学附属中学 </span>
+                               </div>
+                               <div class="list_bottom">
+                                   广州市天河区中山大道西1路
+                               </div>
+                           </div>
+                       </div>-->
+                   </div>
+               </div>
+
+            </div>
+    </div>
+</div>
+</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/x_rem.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/back.js"></script>
+<script src="../../js/sweetalert2.js"></script>
+<script src="../../js/template-web.js"></script>
+<script src="../../js/template.js"></script>
+<script type="text/html" id="All_att">
+    {{if data==null || data.length==0}}
+    <div class="no_in">对不起，您还没有任何关注哦</div>
+    {{else}}
+    <!--人-->
+    {{each data.userList as value i}}
+    <div class="list_teacher" onclick="location.href='../index/teacher_index.html?id={{value.userid}}'">
+        <img src="{{value.portrait==null?'../../img/logo.png':value.portrait}}" alt="">
+        <div class="list_center">
+            <div class="list_center_top clearfix">
+                <span>{{value.nickname==null?value.realName==null?"猴姆教学":value.realName:value.nickname}} </span>
+            </div>
+            <!--<div class="list_center_center clearfix">
+                <em>数学</em>
+                <em>初二</em>
+            </div>
+            <div class="list_bottom">
+                华南师范大学附属中学
+            </div>-->
+        </div>
+    </div>
+    {{/each}}
+    <!--学校-->
+    {{each data.schoolList as value i}}
+    <div class="list_teacher" onclick="location.href='../index/edu_index.html?id={{value.schoolId}}'">
+        <img src="{{value.portrait==null?'../../img/logo.png':value.portrait}}" alt="">
+        <div class="list_center">
+            <div class="list_center_top clearfix">
+                <span>{{value.name}} </span>
+            </div>
+            <!--<div class="list_bottom">
+                {{value.address}}
+            </div>-->
+        </div>
+    </div>
+    {{/each}}
+{{/if}}
+</script>
+<script type="text/html" id="user_att">
+    {{if data==null ||data.length==0}}
+    <div class="no_in">对不起，您暂时没有关注哦</div>
+    {{else}}
+    {{each data as value i}}
+    <div class="list_teacher" onclick="location.href='../index/teacher_index.html?id={{value.userid}}'">
+        <img src="{{value.portrait==null?'../../img/logo.png':value.portrait}}" alt="">
+        <div class="list_center">
+            <div class="list_center_top clearfix">
+                <span>{{value.nickname==null?value.realName==null?"猴姆教学":value.realName:value.nickname}} </span>
+            </div>
+            <!--<div class="list_center_center clearfix">
+                <em>数学</em>
+                <em>初二</em>
+            </div>
+            <div class="list_bottom">
+                华南师范大学附属中学
+            </div>-->
+        </div>
+    </div>
+    {{/each}}
+    {{/if}}
+</script>
+<script type="text/html" id="school_att">
+    {{if data==null ||data.length==0}}
+    <div class="no_in">对不起，您暂时没有关注哦</div>
+    {{else}}
+    {{each data as value i}}
+    <div class="list_teacher" onclick="location.href='../index/edu_index.html?id={{value.schoolId}}'">
+        <img src="{{value.portrait==null?'../../img/logo.png':value.portrait}}" alt="">
+        <div class="list_center">
+            <div class="list_center_top clearfix">
+                <span>{{value.name}} </span>
+            </div>
+            <!--<div class="list_bottom">
+                广州市天河区中山大道西1路
+            </div>-->
+        </div>
+    </div>
+    {{/each}}
+    {{/if}}
+</script>
+<script>
+    $(function () {
+        $('#scroll').scroll({
+            indicators: true //是否显示滚动条
+        });
+
+        var segmentedControl = document.getElementById('segmentedControl');
+        $('.mui-input-group').on('change', 'input', function() {
+            if (this.checked) {
+                var styleEl = document.querySelector('input[name="style"]:checked');
+                var colorEl = document.querySelector('input[name="color"]:checked');
+                if (styleEl && colorEl) {
+                    var style = styleEl.value;
+                    var color = colorEl.value;
+                    segmentedControl.className = 'mui-segmented-control' + (style ? (' mui-segmented-control-' + style) : '') + ' mui-segmented-control-' + color;
+                }
+            }
+        });
+        var userid=localStorage.getItem("this_userid");
+        //我的关注 全部
+        myAjax({url:"/user/my/get/Attention/AllList",data:{userid:userid},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+            $("#All>.teacher_lists").html(template("All_att",data));
+            }
+        })
+        //我关注的用户列表
+        myAjax({url:"/user/my/get/Attention/UserList",data:{userid:userid},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+             $("#teacher .teacher_lists").html(template("user_att",data));
+            }
+        })
+         //我关注的学校列表
+        myAjax({url:"/user/my/get/Attention/SchoolList",data:{userid:userid},type:"post"}, function (data) {
+            console.log(data);
+            if(data.status==200){
+             $("#school .teacher_lists").html(template("school_att",data));
+            }
+        })
+    })
+</script>
+</html>

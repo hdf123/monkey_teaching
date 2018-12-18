@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+
+    <title>任教学校</title>
+    <link rel="stylesheet" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../css/base.css"/>
+    <link rel="stylesheet" href="../../css/sweetalert2.css"/>
+    <link rel="stylesheet" href="../../css/iconfont.css"/>
+    <link rel="stylesheet" href="../../css/header.css"/>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <style>
+        html{
+            background-color: #f4f4f4;
+        }
+        .main{
+            padding-top: 1.6rem;
+        }
+        .main>h3{
+            height: 1rem;
+            line-height: 1rem;
+            padding:0 0.3rem;
+            position: relative;
+        }
+        .main>h3:before{
+            content:"";
+            position: absolute;
+            background: url("../../img/search.png") no-repeat center;
+            -webkit-background-size: 60%;
+            background-size: 60%;
+            width: 0.6rem;
+            height: 0.6rem;
+            left: 25%;
+            top: 18%;
+        }
+        .main>h3>input{
+            display: inline-block;
+            width: 60%;
+            height: 0.6rem;
+            padding: 0;
+            margin-top: 0.2rem;
+            margin-left: 0.3rem;
+            border:none;
+            text-indent: 25%;
+            background-color: #fff;
+            -webkit-border-radius:20px;
+            -moz-border-radius:20px;
+            border-radius: 20px;
+        }
+        .main>h3>em{
+            width: 0.8rem;
+            height: 1rem;
+        }
+        .main>h3>i{
+            height: 1rem;
+            width: 1rem;
+            display: inline-block;
+            text-align: center;
+        }
+        .layer>header>em{
+            top: 5%;
+        }
+        .main>.lists{
+            background-color: #fff;
+            padding: 0.3rem;
+        }
+        .main>.lists>.list{
+
+            border-bottom: 1px solid #eeeeee;
+        }
+        .lists>.list>p{
+            padding-top: 0.1rem;
+            font-size: 0.3rem;
+            margin-bottom: 0.1rem;
+        }
+        .lists>.list>h3{
+            font-size: 0.24rem ;
+            padding-bottom: 0.2rem;
+            color:#666666;
+        }
+        .info{
+            width:26rem;
+        }
+    </style>
+</head>
+<body>
+<div id="loading">
+    <img src="../../img/login.gif" alt=""/>
+    <div>请等待，定位中...</div>
+</div>
+<!--<div id='container' style="display: none;"></div>-->
+<div class="layer">
+    <header id="header" class="mui-bar mui-bar-nav">
+        <i class="mui-icon mui-icon-left-nav mui-pull-left" onclick="back()"></i>
+        <h1 class="mui-title">选择学校</h1>
+      <!--  <em onclick="location.href='../index/select_city.html'"><s>郑州</s><del class="mui-icon mui-icon-arrowdown" ></em>
+    --></header>
+    <div class="main">
+        <h3 >附近学校
+           <!-- <em class="iconfont icon-fangdajing f_right"></em>-->
+            <input type="text"  placeholder="请搜索"/>
+            <i id="search">搜索</i>
+        </h3>
+        <ul class="lists">
+           <!-- <li class="list">
+                <p>天河区嘉福学校</p>
+                <h3>
+                    <i class="iconfont icon-zuobiao"></i>
+                    广州市天河区白沙水路166
+                </h3>
+            </li>
+            <li class="list">
+                <p>天河区嘉福学校</p>
+                <h3>
+                    <i class="iconfont icon-zuobiao"></i>
+                    广州市天河区白沙水路166
+                </h3>
+            </li>-->
+        </ul>
+    </div>
+</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/x_rem.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/back.js"></script>
+<script src="../../js/sweetalert2.js"></script>
+<script src="../../js/template-web.js"></script>
+<script src="../../js/template.js"></script>
+<script type="text/html" id="school">
+    {{if data.length==0}}
+    <div class="in_fo">对不起，您的附近没有任何学校</div>
+    {{else}}
+
+    {{each data as value i}}
+    <li class="list" data-id="{{value.school.schoolId}}" data-name="{{value.school.name}}">
+        <p>{{value.school.name}}</p>
+        <h3>
+            <i class="iconfont icon-zuobiao"></i>
+            {{value.school.address}}
+        </h3>
+    </li>
+    {{/each}}
+
+    {{/if}}
+</script>
+<script>
+    $(function () {
+        //ajax 发送完毕
+        $(document).ajaxStop(function(){
+            $("#loading").hide();
+        });
+        /*城市选择*/
+        var city="郑州";
+        if(localStorage.getItem("city")){
+           city= localStorage.getItem("city");
+            console.log(city);
+        }
+        /*获取经纬度*/
+        myAjax({url:"/autonavi/map/web/geo/Geocode",data:{address:city},type:"post",async:false}, function (data) {
+            console.log(data);
+            if(data.status==200){
+                var location=data.data[0].location;
+                /*保存 发送给后台*/
+                myAjax({url:"/nearby/content/get/near/school",data:{center:location,radius:"10000"},type:"post"}, function (data) {
+                    console.log(data);
+                    if(data.status==200){
+                        $(".lists").html(template("school",data));
+                    }
+                })
+            }
+        })
+        /*搜索学校*/
+        $("#search").click(function () {
+            var search=$("input").val().trim();
+            if(search==""){
+                sweetAlert(
+                        "对不起",
+                        "请你输入搜索内容",
+                        error
+                )
+                return false;
+            }else{
+                myAjax({url:"/search/get/search/school",data:{search:search},type:"post"}, function (data) {
+                    console.log(data);
+                    if(data.status==200){
+                        $(".lists").html(template("school",data));
+                    }
+                })
+            }
+        })
+        $(".main").on("click",".list", function () {
+            var id=$(this).data("id");
+            var name=$(this).data("name");
+            localStorage.setItem("schoolId",id);
+            localStorage.setItem("schoolName",name);
+           /* location.href="./teacher_authentication.html";*/
+            back();
+           /* console.log(id);
+            console.log(name);*/
+        })
+
+    })
+</script>
+
+</html>

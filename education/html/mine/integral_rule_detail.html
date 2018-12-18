@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+
+    <title>我的积分</title>
+
+    <link rel="stylesheet" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../css/base.css"/>
+    <link rel="stylesheet" href="../../css/sweetalert2.css"/>
+    <link rel="stylesheet" href="../../css/iconfont.css"/>
+    <link rel="stylesheet" href="../../css/header.css"/>
+    <style>
+        .main{
+            padding-top: 1.6rem;
+            background-color: #fff;
+        }
+        .integral{
+            height: 1rem;
+            line-height: 1rem;
+            padding-left: 0.3rem;
+            font-size: 0.32rem;
+            position: relative;
+            border-bottom: 0.2rem solid #eeeeee;
+        }
+        .integral>button{
+            position: absolute;
+            right: 3%;
+            top: 24%;
+            width:35%;
+            height: 0.5rem;
+            line-height: 0.5rem;
+            border-radius: 10px;
+            color:#f01414;
+            border:1px solid #999;
+        }
+
+        .integral>em{
+            color:#f01414;
+        }
+        .content>li{
+            min-height: 0.88rem;
+            line-height: 0.88rem;
+            position: relative;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .content>li>span{
+            font-size: 0.3rem;
+            padding-left: 0.3rem;
+        }
+        .content>li>span>em{
+            color:#f01414;
+        }
+        .content>li>i{
+            position: absolute;
+            right: 3%;
+            font-size: 0.24rem;
+        }
+    </style>
+</head>
+<body>
+<div class="layer">
+    <header id="header" class="mui-bar mui-bar-nav">
+        <i class="mui-icon mui-icon-left-nav mui-pull-left" onclick="back()"></i>
+        <h1 class="mui-title">我的积分</h1>
+    </header>
+    <div class="main">
+        <div class="integral">
+        可用积分 <em>50</em>
+        <button >积分明细</button>
+    </div>
+        <ul class="content">
+
+          <!-- <li>
+               <span>实名认证 <em>+10</em></span>
+               <i>2018-08-05 15:30</i>
+           </li>
+           <li>
+               <span>实名认证 <em>+10</em></span>
+               <i>2018-08-05 15:30</i>
+           </li>-->
+        </ul>
+    </div>
+</div>
+</body>
+
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/x_rem.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/base.js"></script>
+<script src="../../js/back.js"></script>
+<script src="../../js/sweetalert2.js"></script>
+<script src="../../js/template-web.js"></script>
+<script src="../../js/template.js"></script>
+<script id="rule" type="text/html">
+    {{each data as value i}}
+    <li>
+        <span>{{value.source}} <em>{{value.subtract==null?'+'+value.increase:'-'+value.subtract}}</em></span>
+        <i>{{time(value.updateTime)}}</i>
+    </li>
+    {{/each}}
+</script>
+<script>
+    $(function () {
+        var userid=localStorage.getItem("this_userid");
+        var score=location.href.split("=")[1];
+        $(".integral em").text(score);
+        $(".integral button").click(function () {
+            location.href='./integral_rule.html?score='+score;
+        });
+
+        myAjax({url:"/user/my/get/Integral/Log",type:"post",data:{userid:userid}}, function (data) {
+            console.log(data);
+            if(data.status==200){
+                template.helper("str",function(str){
+
+                    return str.split(",");
+                })
+                template.helper("time",function(time){
+                    var timestamp=new Date().getTime();//当前时间戳
+                    var kk=timestamp-time;//发表时的时间戳
+                    var timea="";
+                    var sec=parseInt(kk/1000);//秒
+                    var min=parseInt(sec/60);//分
+                    var hour=parseInt(min/60);//时
+                    var day=parseInt(hour/24);//天
+                    if(sec<60){
+                        timea=sec+"秒前";
+                    }else if(min<60){
+                        timea=min+"分钟前";
+                    }else if(hour<24){
+                        timea=hour+"小时前";
+                    }else if(day<7){
+                        timea=day+"天前";
+                    }else{
+                        timea=new Date(time).toLocaleString().replace(/:\d{1,2}$/,' ').replace(/\//g,"-");
+                    }
+                    return timea;
+
+                });
+                $(".content").html(template("rule",data));
+            }
+        })
+    })
+</script>
+</html>
